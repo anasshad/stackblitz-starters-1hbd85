@@ -1,11 +1,14 @@
-import React from "react";
-import "./style.css";
+import React from 'react';
+import { useAccount, useConnect, useEnsName } from 'wagmi';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import './style.css';
 
 export default function App() {
-  return (
-    <div>
-      <h1>Hello StackBlitz!</h1>
-      <p>Start editing to see some magic happen :)</p>
-    </div>
-  );
+  const { address, isConnected } = useAccount();
+  const { data: ensName } = useEnsName({ address });
+  const { connect } = useConnect({
+    connector: new InjectedConnector(),
+  });
+  if (isConnected) return <div>Connected to {ensName ?? address}</div>;
+  return <button onClick={() => connect()}>Connect Wallet</button>;
 }
